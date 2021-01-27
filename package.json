@@ -1,6 +1,6 @@
 {
   "name": "axentrojs",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Axentro js tools",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -9,10 +9,10 @@
     "lint": "tslint -p tsconfig.json",
     "test": "jest --config jestconfig.json",
     "build": "tsc",
-    "prepare" : "npm run build",
-    "preversion" : "npm run lint",
-    "version" : "npm run format && git add -A src",
-    "postversion" : "git push && git push --tags"
+    "prepare": "npm run build",
+    "preversion": "npm run lint",
+    "version": "npm run format && git add -A src",
+    "postversion": "git push && git push --tags"
   },
   "keywords": [],
   "author": "",
@@ -29,5 +29,7 @@
   "dependencies": {
     "tweetnacl": "^1.0.3"
   },
-  "files": ["lib/**/*"]
+  "files": [
+    "lib/**/*"
+  ]
 }
