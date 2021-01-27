@@ -1,13 +1,18 @@
 {
   "name": "axentrojs",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Axentro js tools",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
   "scripts": {
     "format": "prettier --write \"src/**/*.ts\"",
     "lint": "tslint -p tsconfig.json",
     "test": "jest --config jestconfig.json",
-    "build": "tsc"
+    "build": "tsc",
+    "prepare" : "npm run build",
+    "preversion" : "npm run lint",
+    "version" : "npm run format && git add -A src",
+    "postversion" : "git push && git push --tags"
   },
   "keywords": [],
   "author": "",
