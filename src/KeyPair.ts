@@ -15,4 +15,8 @@ export class KeyPair {
     const signature = sign(Uint8Array.from(data), this.naclKeyPair.secretKey);
     return Buffer.from(signature).toString('hex');
   }
+
+  public publicKey() {
+    return this.naclKeyPair.publicKey;
+  }
 }
