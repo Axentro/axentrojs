@@ -50,7 +50,7 @@ describe('Wallet', () => {
       recipients: [],
       scaled: 0,
       senders: [{
-        address: "VDBkYWQxZjZlZjllOTAzYzNiODQ0NmZkZTI4NDBhYmMzYjUxYThjM2E1ZjNkODlj",
+        address: "TTAzZGNjOTliNTg4NzIxYzhjZDRiYjJhODlhNjM3MDM5ZWY4NWZjN2ZhOWMxNDk5",
         public_key: "48c45b7e45cd415187216452fa22523e002ca042c2bd7205484f29201c3d5806f90e7aeebad37e3fbe01286c25d4027d3f3fec7b5647eff33c07ebd287b57242",
         amount: '500000000000',
         fee: '100000000',
@@ -63,6 +63,25 @@ describe('Wallet', () => {
 
     const signedTransaction = wallet.signTransaction(transaction, 0);
 
-    expect(signedTransaction.senders[0].signature).toEqual('19a089f0981f242da3d0197714d625152a6826448cf4588769234b9fddada4e8a2e2e5e4e79fea3f0f376245bfb75bf0318d3c5c6118f9308b07c8e63d38d80d39306662663637353866346230646637333662666637363064343530373137656364623533663538353164333132633462313130363132303265346332626661');
+    expect(signedTransaction.senders[0].signature).toEqual('66ddf59a8684fee831edd16398b8996e876ecb338240787612dd760a998bc44bda61d8c713c5b5cfee8c7b1a94f26dcf56c4abd8613274db35ecdb4cebc9d10132346130396332356537363230613634346631663837663961326133333335353636646135363230393839353464363635306266663066343664396339376538');
+  });
+
+  it('can be exported as wif', () => {
+    const secretKey = Uint8Array.from(
+      Buffer.from(
+        'f92913f355539a6ec6129b744a9e1dcb4d3c8df29cccb8066d57c454cead6fe4',
+        'hex',
+      ),
+    );
+    const publicKey = Uint8Array.from(
+      Buffer.from('a4b2856bfec510abab89753fac1ac0e1112364e7d250545963f135f2a33188ed', 'hex'),
+    );
+    const wallet = new Wallet(new KeyPair({ publicKey, secretKey }), Network.mainnet);
+
+    const hexWif = wallet.exportToWif();
+
+    expect(hexWif).toEqual(
+      'TTBmOTI5MTNmMzU1NTM5YTZlYzYxMjliNzQ0YTllMWRjYjRkM2M4ZGYyOWNjY2I4MDY2ZDU3YzQ1NGNlYWQ2ZmU0MjdlYzNl',
+    );
   });
 });

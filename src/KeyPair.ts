@@ -19,4 +19,8 @@ export class KeyPair {
   public publicKey() {
     return this.naclKeyPair.publicKey;
   }
+
+  public privateKey() {
+    return Buffer.from(this.naclKeyPair.secretKey);
+  }
 }

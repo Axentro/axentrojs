@@ -46,6 +46,15 @@ export class Wallet {
     return transaction;
   }
 
+  public exportToWif() {
+    const privateKey = this.keyPair.privateKey().toString('hex');
+    const networkKey = this.network.toString() + privateKey;
+    const hashedKey = this.sha2(Buffer.from(this.sha2(Buffer.from(networkKey))));
+    const checksum = hashedKey.substring(0, 6);
+    const encodedKey = Buffer.from(networkKey + checksum).toString('base64');
+    return encodedKey;
+  }
+
   private sha2(data: Buffer): string {
     const hash = crypto.createHash('sha256');
     hash.update(data);
