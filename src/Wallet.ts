@@ -1,6 +1,7 @@
 import { KeyPair } from './KeyPair';
 import { Network } from './Network';
 import * as crypto from 'crypto';
+import { Transaction } from './Transaction';
 
 export class Wallet {
   private keyPair: KeyPair;
@@ -29,6 +30,20 @@ export class Wallet {
     const hashedAddressAgain = this.sha2(Buffer.from(this.sha2(Buffer.from(networkAddress))));
     const checksum = hashedAddressAgain.substring(0, 6);
     return Buffer.from(networkAddress + checksum).toString('base64');
+  }
+
+  public signTransaction(transaction : Transaction, senderIndex : number) : Transaction {
+    if(transaction.senders[senderIndex].address !== this.address()) {
+      fail("wrong wallet")
+    }
+    const hash = this.sha2(
+      Buffer.from(
+        JSON.stringify(transaction)
+      )
+    );
+    const signature = this.sign(hash);
+    transaction.senders[senderIndex].signature = signature;
+    return transaction;
   }
 
   private sha2(data: Buffer): string {
