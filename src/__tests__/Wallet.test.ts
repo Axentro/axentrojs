@@ -1,5 +1,4 @@
 import { KeyPair, Wallet } from '../index';
-import { SignKeyPair } from 'tweetnacl';
 
 describe('Wallet', () => {
   it('can be created', () => {
