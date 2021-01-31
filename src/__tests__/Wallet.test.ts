@@ -1,5 +1,6 @@
 import { KeyPair, Network, Wallet } from '../index';
 import { Transaction, transactionIdGenerator, TransactionKind, TransactionVersion } from '../Transaction';
+import * as crypto from 'crypto';
 
 describe('Wallet', () => {
   it('can be created', () => {
@@ -83,5 +84,14 @@ describe('Wallet', () => {
     expect(hexWif).toEqual(
       'TTBmOTI5MTNmMzU1NTM5YTZlYzYxMjliNzQ0YTllMWRjYjRkM2M4ZGYyOWNjY2I4MDY2ZDU3YzQ1NGNlYWQ2ZmU0MjdlYzNl',
     );
+  });
+
+  it('can be imported from wif', () => {
+    const publicKey = Buffer.from('3aabd252f63f9c1ddfcd00f67dcfd01ffea6997e59f67f39f65f42ebd84d780d', 'hex');
+    const wif = "TTAxNWQ4MDQ1ZDQ4YTFmYzA3YjkyMWQ3MWIwYmY5YjA5ZDM0MjQ1MDc2MzRlZjMzNmYxMjVhNjQ5ZWE1OTQwZTA2M2FhYmQyNTJmNjNmOWMxZGRmY2QwMGY2N2RjZmQwMWZmZWE2OTk3ZTU5ZjY3ZjM5ZjY1ZjQyZWJkODRkNzgwZGY5MjY3OA==";
+
+    const wallet = Wallet.importFromWif(wif);
+
+    expect(wallet.publicKey()).toEqual(publicKey);
   });
 });

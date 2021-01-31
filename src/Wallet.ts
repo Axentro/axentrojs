@@ -11,6 +11,13 @@ export class Wallet {
     return new Wallet(KeyPair.create(), network);
   }
 
+  static importFromWif(wif : string) {
+    const decoded = Buffer.from(wif, 'base64').toString();
+    const network = decoded.substring(0, 2) as Network;
+    const secretKey = decoded.substring(2, decoded.length - 6);
+    return new Wallet(KeyPair.fromPrivateKey(Buffer.from(secretKey, 'hex')), network);
+  }
+
   constructor(keyPair: KeyPair, network: Network) {
     this.keyPair = keyPair;
     this.network = network;
@@ -41,8 +48,7 @@ export class Wallet {
         JSON.stringify(transaction)
       )
     );
-    const signature = this.sign(hash);
-    transaction.senders[senderIndex].signature = signature;
+    transaction.senders[senderIndex].signature = this.sign(hash);
     return transaction;
   }
 
@@ -51,8 +57,7 @@ export class Wallet {
     const networkKey = this.network.toString() + privateKey;
     const hashedKey = this.sha2(Buffer.from(this.sha2(Buffer.from(networkKey))));
     const checksum = hashedKey.substring(0, 6);
-    const encodedKey = Buffer.from(networkKey + checksum).toString('base64');
-    return encodedKey;
+    return Buffer.from(networkKey + checksum).toString('base64');
   }
 
   private sha2(data: Buffer): string {

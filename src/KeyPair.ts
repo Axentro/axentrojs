@@ -7,6 +7,12 @@ export class KeyPair {
     return new KeyPair(sign.keyPair());
   }
 
+  static fromPrivateKey(privateKey: Buffer) {
+    const privateKeyAsUint = Uint8Array.from(privateKey);
+    const keyPair = sign.keyPair.fromSecretKey(privateKeyAsUint);
+    return new KeyPair(keyPair);
+  }
+
   constructor(naclKeyPair: SignKeyPair) {
     this.naclKeyPair = naclKeyPair;
   }
