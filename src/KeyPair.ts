@@ -8,8 +8,12 @@ export class KeyPair {
   }
 
   static fromPrivateKey(privateKey: Buffer) {
-    const privateKeyAsUint = Uint8Array.from(privateKey);
-    const keyPair = sign.keyPair.fromSecretKey(privateKeyAsUint);
+    const keyPair = sign.keyPair.fromSecretKey(Uint8Array.from(privateKey));
+    return new KeyPair(keyPair);
+  }
+
+  static fromSeed(seed : Buffer) {
+    const keyPair = sign.keyPair.fromSeed(Uint8Array.from(seed));
     return new KeyPair(keyPair);
   }
 
@@ -27,6 +31,6 @@ export class KeyPair {
   }
 
   public privateKey() {
-    return Buffer.from(this.naclKeyPair.secretKey);
+    return Buffer.from(this.naclKeyPair.secretKey).slice(0, 32);
   }
 }
