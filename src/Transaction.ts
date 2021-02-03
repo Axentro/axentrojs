@@ -25,14 +25,14 @@ export enum TransactionVersion {
 export interface Sender {
   address: string;
   public_key: string;
-  amount: string;
-  fee: string;
-  signature?: string;
+  amount: number;
+  fee: number;
+  signature: string;
 }
 
 export interface Recipient {
   address: string;
-  amount: string;
+  amount: number;
 }
 
 export function transactionIdGenerator(): string {

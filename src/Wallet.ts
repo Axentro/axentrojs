@@ -1,7 +1,8 @@
 import { KeyPair } from './KeyPair';
 import { Network } from './Network';
-import { Transaction } from './Transaction';
-import * as crypto from "crypto";
+import { Transaction, transactionIdGenerator, TransactionKind, TransactionVersion } from './Transaction';
+
+import * as crypto from 'crypto';
 
 export abstract class Wallet {
   protected keyPair: KeyPair;
@@ -11,8 +12,8 @@ export abstract class Wallet {
     this.keyPair = keyPair;
     this.network = network;
   }
-  public sign(message: string) {
-    return this.keyPair.signData(Buffer.from(message, 'utf8'));
+  public sign(message: Buffer) {
+    return this.keyPair.signData(message);
   }
 
   public publicKey() {
@@ -36,8 +37,37 @@ export abstract class Wallet {
       fail('wrong wallet');
     }
     const hash = this.sha2(Buffer.from(JSON.stringify(transaction)));
-    transaction.senders[senderIndex].signature = this.sign(hash);
+    transaction.senders[senderIndex].signature = this.sign(Buffer.from(hash));
     return transaction;
+  }
+
+  public verifySignature(message: string, signature: string) {
+    return this.keyPair.verifySignature(message, signature);
+  }
+
+  public createAndSignTransaction(amount : number, address : string, fee : number = 10000, token : string = 'AXNT', kind : TransactionKind = TransactionKind.FAST) : Transaction {
+    return this.signTransaction({
+      id: transactionIdGenerator(),
+      action: "send",
+      senders: [{
+        address: this.address(),
+        public_key: this.publicKey().toString('hex'),
+        amount,
+        fee,
+        signature: "0"
+      }],
+      recipients: [{
+        address,
+        amount
+      }],
+      message: "",
+      token,
+      prev_hash: "0",
+      timestamp: Math.floor(Date.now() / 1000),
+      scaled: 1,
+      kind,
+      version: TransactionVersion.V1
+    }, 0);
   }
 
   protected sha2(data: Buffer): string {
