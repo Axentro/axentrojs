@@ -1,15 +1,12 @@
 import { sign, SignKeyPair } from 'tweetnacl';
+import * as elliptic from 'elliptic';
 
 export class KeyPair {
   private naclKeyPair: SignKeyPair;
+  private ec: elliptic.eddsa;
 
   static create(): KeyPair {
     return new KeyPair(sign.keyPair());
-  }
-
-  static fromPrivateKey(privateKey: Buffer) {
-    const keyPair = sign.keyPair.fromSecretKey(Uint8Array.from(privateKey));
-    return new KeyPair(keyPair);
   }
 
   static fromSeed(seed : Buffer) {
@@ -19,11 +16,17 @@ export class KeyPair {
 
   constructor(naclKeyPair: SignKeyPair) {
     this.naclKeyPair = naclKeyPair;
+    this.ec = new elliptic.eddsa('ed25519');
   }
 
   public signData(data: Buffer): string {
-    const signature = sign(Uint8Array.from(data), this.naclKeyPair.secretKey);
-    return Buffer.from(signature).toString('hex');
+    const key = this.ec.keyFromSecret(this.privateKey());
+    return key.sign(data).toHex().toLowerCase();
+  }
+
+  public verifySignature(message: string, signature: string) {
+    const key = this.ec.keyFromPublic(Buffer.from(this.publicKey()).toString('hex'));
+    return key.verify(message, signature);
   }
 
   public publicKey() {

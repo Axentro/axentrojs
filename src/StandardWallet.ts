@@ -11,7 +11,7 @@ export class StandardWallet extends Wallet {
     const decoded = Buffer.from(wif, 'base64').toString();
     const network = decoded.substring(0, 2) as Network;
     const secretKey = decoded.substring(2, decoded.length - 6);
-    return new StandardWallet(KeyPair.fromPrivateKey(Buffer.from(secretKey, 'hex')), network);
+    return new StandardWallet(KeyPair.fromSeed(Buffer.from(secretKey, 'hex')), network);
   }
 
   constructor(keyPair: KeyPair, network: Network) {
